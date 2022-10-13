@@ -21,15 +21,14 @@ public class QuadraticEquationsController {
     @Autowired
     QuadraticEquationsSolver quadraticEquationsSolver;
 
-    // Endpoint for HTTP GET method - get input params as string:
+    // Endpoint for HTTP GET method - get input params as string & return Solution object as JSON:
     @GetMapping("${url.get}/{equationString}")
     private QuadraticEquationsSolver.Solution resolveFromGet(@PathVariable String equationString){
         try {
-            quadraticEquationsSolver.initializeParamsFromString(equationString);
-            return quadraticEquationsSolver.solveQuadraticEquation();
-        }
+                return quadraticEquationsSolver.initializeParamsFromString(equationString).solveQuadraticEquation();
+            }
         catch (QuadraticEquationsException exception){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
         }
     }
 
@@ -47,10 +46,9 @@ public class QuadraticEquationsController {
 
     // Endpoint for HTTP GET method - get input parameters from file based on provided path:
     @GetMapping("${url.get.file}/{path}")
-    private QuadraticEquationsSolver.Solution resolveFromFile(@PathVariable String pathToFile){
+    private QuadraticEquationsSolver.Solution resolveFromFile(@RequestBody @NotNull String pathToFile){
         try {
-            quadraticEquationsSolver.initializeParamsFromFile(pathToFile);
-            return quadraticEquationsSolver.solveQuadraticEquation();
+            return quadraticEquationsSolver.initializeParamsFromFile(pathToFile).solveQuadraticEquation();
         }
         catch (QuadraticEquationsException exception){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
