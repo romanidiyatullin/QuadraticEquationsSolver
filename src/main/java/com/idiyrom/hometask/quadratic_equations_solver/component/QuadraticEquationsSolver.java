@@ -134,7 +134,7 @@ public class QuadraticEquationsSolver {
             initializationString = initializationString.replace("\n","");  // Get rid of new line char
         }
         catch (IOException e){
-            System.out.println(e.getMessage());
+            throw new QuadraticEquationsException(e.getMessage());
         }
         return initializeParamsFromString(initializationString); // re-use existing method that parses string
     }

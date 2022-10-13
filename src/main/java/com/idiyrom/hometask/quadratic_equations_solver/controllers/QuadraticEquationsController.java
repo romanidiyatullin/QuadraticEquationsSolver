@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Map;
+
 /*
     REST Controller with endpoint to receive quadratic equation as String via HTTP GET method
 */
@@ -44,11 +46,11 @@ public class QuadraticEquationsController {
     }
 
 
-    // Endpoint for HTTP GET method - get input parameters from file based on provided path:
-    @GetMapping("${url.get.file}/{path}")
-    private QuadraticEquationsSolver.Solution resolveFromFile(@RequestBody @NotNull String pathToFile){
+    // Endpoint for HTTP POST method - get input parameters from file based on provided path to file:
+    @PostMapping("${url.post.file}")
+    private QuadraticEquationsSolver.Solution resolveFromFile(@RequestBody @NotNull Map<String, String> pathToFile){
         try {
-            return quadraticEquationsSolver.initializeParamsFromFile(pathToFile).solveQuadraticEquation();
+            return quadraticEquationsSolver.initializeParamsFromFile(pathToFile.get("path")).solveQuadraticEquation();
         }
         catch (QuadraticEquationsException exception){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
