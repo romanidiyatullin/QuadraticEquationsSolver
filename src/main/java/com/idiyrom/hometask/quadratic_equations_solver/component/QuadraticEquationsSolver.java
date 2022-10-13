@@ -106,7 +106,7 @@ public class QuadraticEquationsSolver {
 
         for (String keyValuePair : source.split(SEPARATOR_FOR_EQUATION_STRING)) {
             String[] keyValuePairArray = keyValuePair.split(" *= *", 2);
-            // Check if parsing was successful - we should have Constant as [0] and it's value [1]:
+            // Check if parsing was successful - we should have Constant as [0] and it's value at [1] in array:
             if(keyValuePairArray.length<2)
                 throw new QuadraticEquationsException("Parsing Exception - please check string");
             else
