@@ -23,7 +23,8 @@ public class QuadraticEquationsController {
     @Autowired
     QuadraticEquationsSolver quadraticEquationsSolver;
 
-    // Endpoint for HTTP GET method - get input params as string & return Solution object as JSON:
+    // Endpoint for HTTP GET method - get input params as String, i.e.:
+    // http://localhost:8082/api/get/A=2&B=1&C=-6&P=7
     @GetMapping("${url.get}/{equationString}")
     private QuadraticEquationsSolver.Solution resolveFromGet(@PathVariable String equationString){
         try {
@@ -34,7 +35,13 @@ public class QuadraticEquationsController {
         }
     }
 
-    // Endpoint for HTTP POST method - get input parameters in JSON format & return Solution object as JSON:
+    // Endpoint for HTTP POST method - get input parameters in JSON, i.e.:
+    //    {
+    //            "a": 0,
+    //            "b": 3,
+    //            "c":-4,
+    //            "precision": 4
+    //    }
     @PostMapping("${url.post}")
     private QuadraticEquationsSolver.Solution resolveFromPost(@RequestBody @NotNull QuadraticEquationsSolver quadraticEquationsSolverFromPost){
         try {
@@ -46,7 +53,10 @@ public class QuadraticEquationsController {
     }
 
 
-    // Endpoint for HTTP POST method - get input parameters from file based on provided path to file:
+    // Endpoint for HTTP POST method - get input parameters from file based on path to file in JSON, i.e.:
+    //    {
+    //        "path":"///Users/user1/test.txt"
+    //    }
     @PostMapping("${url.post.file}")
     private QuadraticEquationsSolver.Solution resolveFromFile(@RequestBody @NotNull Map<String, String> pathToFile){
         try {
