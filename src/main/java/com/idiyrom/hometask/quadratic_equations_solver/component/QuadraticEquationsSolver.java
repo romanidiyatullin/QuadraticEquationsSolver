@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -86,8 +85,11 @@ public class QuadraticEquationsSolver {
         */
             BigDecimal sqrt = b.multiply(b).subtract(a.multiply(c.multiply(new BigDecimal(4)))).sqrt(new MathContext(precision));
             BigDecimal divider = a.multiply(new BigDecimal(2));
-            root1 = b.negate().add(sqrt).divide(divider, RoundingMode.DOWN);
-            root2 = b.negate().subtract(sqrt).divide(divider, RoundingMode.DOWN);
+            root1 = (b.negate().add(sqrt)).divide(divider,new MathContext(precision));
+            root2 = (b.negate().subtract(sqrt)).divide(divider,new MathContext(precision));
+
+            if(root1.equals(root2))
+                root2=null;
 
             return new Solution(root1, root2);
         }
@@ -106,7 +108,7 @@ public class QuadraticEquationsSolver {
 
         for (String keyValuePair : source.split(SEPARATOR_FOR_EQUATION_STRING)) {
             String[] keyValuePairArray = keyValuePair.split(" *= *", 2);
-            // Check if parsing was successful - we should have Constant as [0] and it's value at [1] in array:
+            // Check if parsing was successful - we should have Constant at [0] and it's value at [1] in array:
             if(keyValuePairArray.length<2)
                 throw new QuadraticEquationsException("Parsing Exception - please check string");
             else
@@ -134,7 +136,7 @@ public class QuadraticEquationsSolver {
             initializationString = initializationString.replace("\n","");  // Get rid of new line char
         }
         catch (IOException e){
-            throw new QuadraticEquationsException("Issue with reading file - either incorrect path or issue with file content");
+            throw new QuadraticEquationsException("Issue with reading file. Please check path of file!");
         }
         return initializeParamsFromString(initializationString); // re-use existing method that parses string
     }
@@ -154,7 +156,7 @@ public class QuadraticEquationsSolver {
         if(c==null) c = BigDecimal.ZERO;
 
 
-        // SQRT cannot be invoked on negative number!
+        // SQRT cannot be invoked on negative number! This means no roots!
         if(b.multiply(b).compareTo(a.multiply(c).multiply(new BigDecimal(4))) <0)
             throw new QuadraticEquationsException("Incorrect equation - expression in SQRT cannot be negative");
 
