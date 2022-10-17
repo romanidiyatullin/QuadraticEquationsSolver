@@ -65,7 +65,7 @@ public class QuadraticEquationsSolver {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public class Solution {
+    public static class Solution {
         private BigDecimal root1 = null;
         private BigDecimal root2 = null;
     }
@@ -78,15 +78,17 @@ public class QuadraticEquationsSolver {
         // Perform computation only if fields have valid values - otherwise throwing QuadraticEquationsException
         validateQuadraticEquationsSolver();
 
+        MathContext precisionContext = new MathContext(precision);
+
         /*
         Formula to solveQuadraticEquation quadratic equations:
         ROOT1 =  (-B + SQRT(BB - 4AC) ) / 2A
         ROOT2 =  (-B - SQRT(BB - 4AC) ) / 2A
         */
-            BigDecimal sqrt = b.multiply(b).subtract(a.multiply(c.multiply(new BigDecimal(4)))).sqrt(new MathContext(precision));
+            BigDecimal sqrt = b.multiply(b).subtract(a.multiply(c.multiply(new BigDecimal(4)))).sqrt(precisionContext);
             BigDecimal divider = a.multiply(new BigDecimal(2));
-            root1 = (b.negate().add(sqrt)).divide(divider,new MathContext(precision));
-            root2 = (b.negate().subtract(sqrt)).divide(divider,new MathContext(precision));
+            root1 = (b.negate().add(sqrt)).divide(divider,precisionContext);
+            root2 = (b.negate().subtract(sqrt)).divide(divider,precisionContext);
 
             if(root1.equals(root2))
                 root2=null;
@@ -104,7 +106,7 @@ public class QuadraticEquationsSolver {
         if (source == null || source.length() < MIN_EQUATION_STRING_SIZE)
             throw new QuadraticEquationsException("Incorrect quadratic equation string size");
 
-        Map<String, String> parsedStringMap = new HashMap<String, String>();
+        Map<String, String> parsedStringMap = new HashMap<>();
 
         for (String keyValuePair : source.split(SEPARATOR_FOR_EQUATION_STRING)) {
             String[] keyValuePairArray = keyValuePair.split(" *= *", 2);
@@ -129,7 +131,7 @@ public class QuadraticEquationsSolver {
         Method to get equation String from file
     */
     public QuadraticEquationsSolver initializeParamsFromFile(String path) throws QuadraticEquationsException {
-        String initializationString = null;
+        String initializationString;
         try {
             Path file = Paths.get(path);
             initializationString = Files.readString(file);
